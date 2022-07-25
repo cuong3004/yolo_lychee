@@ -5,12 +5,10 @@ __maintainer__ = "Sachin Mehta"
 
 import torch
 from torch import nn
-from fairseq.delight_modules.nn_functions import get_weight_layer
-from fairseq.delight_modules.activation_layers import get_activation_layer
+from fake_bert.models.nn_functions import get_weight_layer
 import math
 import numpy as np
 from typing import Optional
-from fairseq.delight_modules.print_utilities import *
 
 
 class DExTraUnit(nn.Module):
@@ -295,6 +293,23 @@ class DExTraUnit(nn.Module):
         else:
             raise NotImplementedError
         return x
+
+if __name__ == "__main__":
+
+    DExTraUnit(
+        in_features=args.delight_emb_map_dim,
+        in_proj_features=args.delight_emb_out_dim // 2,
+        out_features=args.delight_emb_out_dim,
+        width_multiplier=args.delight_emb_width_mult,
+        dextra_depth=args.delight_emb_depth,
+        dextra_dropout=args.delight_dropout,
+        max_glt_groups=args.delight_emb_max_groups,
+        act_type=args.act_type,
+        norm_type=args.norm_type,
+        use_bias=True,
+        is_iclr_version=args.define_iclr,
+        glt_shuffle=args.glt_shuffle,
+    )
         
 # import torch
 # import torch.nn as nn

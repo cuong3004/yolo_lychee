@@ -1,6 +1,12 @@
 from typing import Optional
 import torch.nn as nn
 import torch 
+import torch.nn.functional as F
+from fake_bert.models.normalization_layers import get_norm_layer
+from fake_bert.models.activation_layers import get_activation_layer
+
+
+
 
 class GroupLinear(nn.Module):
     '''
@@ -26,10 +32,10 @@ class GroupLinear(nn.Module):
 
         if in_features % n_groups != 0:
             err_msg = "Input dimensions ({}) must be divisible by n_groups ({})".format(in_features, n_groups)
-            print_error_message(err_msg)
+            # print_error_message(err_msg)
         if out_features % n_groups != 0:
             err_msg = "Output dimensions ({}) must be divisible by n_groups ({})".format(out_features, n_groups)
-            print_error_message(err_msg)
+            # print_error_message(err_msg)
 
         # warning_message = 'Please install custom cuda installation for faster training and inference'
 
@@ -321,6 +327,13 @@ def get_weight_layer(name: str, in_features: int, out_features: int, groups: int
     else:
         raise NotImplementedError
     return layer
+
+def get_embedding_layer(num_embeddings, embedding_dim, padding_idx=None):
+    emb = nn.Embedding(num_embeddings, embedding_dim, padding_idx)
+    # initialize embedding layer
+    nn.init.normal_(emb.weight, mean=0, std=embedding_dim ** -0.5)
+    nn.init.constant_(emb.weight[padding_idx], 0)
+    return emb
 
 
 if __name__ == '__main__':
